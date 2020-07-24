@@ -5,9 +5,9 @@ using UnityEngine;
 
 public class Tile : MonoBehaviour
 {
-    public int xpos;
-    public int zpos;
-    public int height;
+    [ReadOnly] public int xpos;
+    [ReadOnly] public int zpos;
+    [ReadOnly] public int height;
 
     // Set variables based on the info
     // also spam columns based on the height
@@ -20,5 +20,4 @@ public class Tile : MonoBehaviour
         TileRenderer renderer = GetComponent<TileRenderer>();
         if (renderer != null) renderer.Render(height);
     }
-
 }

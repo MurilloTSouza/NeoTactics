@@ -5,5 +5,5 @@ using UnityEngine.Tilemaps;
 
 public interface IGridGenerator
 {
-    GridInfo[,] Generate();
+    GridInfo[,] Generate(GridInfo[,] grid);
 }

@@ -7,28 +7,30 @@ using UnityEngine.Tilemaps;
 // GridInfo[,] Received from the IGridGenerator
 public class MapSpawner : MonoBehaviour
 {
-    public Tile[,] grid; // map tiles instances
-
-    public BasicGridGenerator generator; // strategy to generate
+    // map tiles instances
+    public Tile[,] grid;
 
     public float scale = 1;
     public Vector3 origin = Vector3.zero;
 
-    public int xsize; // don't set it, public just to inspector
-    public int zsize; // don't set it, public just to inspector
+    public int xsize;
+    public int zsize;
+
+    // sequence of generators to generate grid
+    public GridGenerator[] generators;
 
     private void Awake()
     {
-        grid = Spawn(generator);
+        GridInfo[,] fullGenerated = GenerateChain(new GridInfo[xsize, zsize]);
+        grid = Spawn(fullGenerated);
     }
 
-    private Tile[,] Spawn(IGridGenerator generator)
+    private Tile[,] Spawn(GridInfo[,] gridInfos)
     {
-        // result from generate
-        GridInfo[,] infos = generator.Generate(); 
+        if(gridInfos == null) return null;
 
-        xsize = infos.GetLength(0);
-        zsize = infos.GetLength(1);
+        xsize = gridInfos.GetLength(0);
+        zsize = gridInfos.GetLength(1);
 
         // tile instances
         Tile[,] grid = new Tile[xsize, zsize]; 
@@ -37,7 +39,9 @@ public class MapSpawner : MonoBehaviour
         {
             for(int z=0; z<zsize; z++)
             {
-                GridInfo info = infos[x, z];
+                GridInfo info = gridInfos[x, z];
+
+                if(info == null) { continue; } //if null skip iteration
 
                 // position gains offset of origin
                 // the y position must be divided by 2
@@ -48,11 +52,22 @@ public class MapSpawner : MonoBehaviour
                     (float)info.height/2,
                     z * scale) + origin;
 
-                Tile tile = Instantiate(info.prefab, position, Quaternion.identity);
+                Tile tile = Instantiate(info.prefab, position, Quaternion.identity, this.transform);
                 tile.AdjustInfo(info); // used to set variables and spam columns
                 grid[x, z] = tile;
             }
         }
         return grid;
+    }
+
+    private GridInfo[,] GenerateChain(GridInfo[,] grid)
+    {
+        if (grid == null) return null;
+
+        foreach(IGridGenerator generator in generators)
+        {
+            generator.Generate(grid);
+        }
+        return grid; //check later if is not necessary, since is passed by reference
     }
 }

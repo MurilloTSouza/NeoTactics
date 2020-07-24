@@ -11,6 +11,8 @@ public class GridInfo
     public int xpos;
     public int zpos;
     public int height;
+
+    public static GridInfoBuilder Builder() { return new GridInfoBuilder(); }
 }
 
 public class GridInfoBuilder
