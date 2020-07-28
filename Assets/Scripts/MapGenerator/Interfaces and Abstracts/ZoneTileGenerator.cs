@@ -5,16 +5,13 @@ using UnityEngine;
 //Iterate in a zone and passes responsability to implementing class
 public abstract class ZoneTileGenerator : GridGenerator
 {
-    public int xStart;
-    public int zStart;
-    public int xEnd;
-    public int zEnd;
+    public Zone zone;
 
     public override GridInfo[,] Generate(GridInfo[,] grid)
     {
-        for (int x = xStart; x <= xEnd; x++)
+        for (int x = zone.xStart; x <= zone.xEnd; x++)
         {
-            for (int z = zStart; z <= zEnd; z++)
+            for (int z = zone.zStart; z <= zone.zEnd; z++)
             {
                 GridInfo info = grid[x, z];
                 if (info != null) GeneratePrefabAndHeight(info);
