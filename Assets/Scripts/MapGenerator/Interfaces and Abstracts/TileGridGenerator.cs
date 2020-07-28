@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using UnityEngine;
 
+// Render Tiles bases on quantity
 public abstract class TileGridGenerator : GridGenerator
 {
     public int minquant;
