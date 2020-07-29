@@ -7,31 +7,29 @@ using UnityEngine.Tilemaps;
 // GridInfo[,] Received from the IGridGenerator
 public class MapSpawner : MonoBehaviour
 {
-    // map tiles instances
-    public Grid grid;
-
     public float scale = 1;
     public Vector3 origin = Vector3.zero;
 
     // sequence of generators to generate grid
     public GridGenerator[] generators;
 
-    private void Awake()
-    {
-        GridInfo[,] fullGenerated = GenerateChain(new GridInfo[grid.xsize, grid.zsize]);
-        grid.grid = Spawn(fullGenerated);
+    public Tile[,] GenerateAndSpawn(int xsize, int zsize, Transform parent) {
+        return Spawn(
+            GenerateChain(new GridInfo[xsize,zsize]), parent);
     }
 
-    private Tile[,] Spawn(GridInfo[,] gridInfos)
+    private Tile[,] Spawn(GridInfo[,] gridInfos, Transform parent)
     {
         if(gridInfos == null) return null;
+        int xsize = gridInfos.GetLength(0);
+        int zsize = gridInfos.GetLength(1);
 
         // tile instances
-        Tile[,] instances = new Tile[grid.xsize, grid.zsize]; 
+        Tile[,] instances = new Tile[xsize, zsize]; 
 
-        for(int x=0; x<grid.xsize; x++)
+        for(int x=0; x<xsize; x++)
         {
-            for(int z=0; z<grid.zsize; z++)
+            for(int z=0; z<zsize; z++)
             {
                 GridInfo info = gridInfos[x, z];
 
@@ -46,7 +44,7 @@ public class MapSpawner : MonoBehaviour
                     (float)info.height/2,
                     z * scale) + origin;
 
-                Tile tile = Instantiate(info.prefab, position, Quaternion.identity, grid.transform);
+                Tile tile = Instantiate(info.prefab, position, Quaternion.identity, parent);
                 tile.AdjustInfo(info); // used to set variables and spam columns
                 instances[x, z] = tile;
             }
