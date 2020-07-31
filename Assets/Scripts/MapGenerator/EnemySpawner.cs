@@ -15,12 +15,21 @@ public class EnemySpawner : GridListener
 
     private void SpawnEnemies()
     {
-        List<Tile> list = grid.AsList(spawnZone);
-        foreach(Unit unit in enemyTeam.units)
+        List<Tile> availablePositions = grid.AsList(spawnZone);
+        foreach(Unit unit in enemyTeam.prefabs)
         {
-            int index = Random.Range(0, list.Count);
-            grid.SpawnContent(list[index], unit.gameObject, enemyTeam.transform);
-            list.RemoveAt(index);
+            // Instantiating enemy
+            int index = Random.Range(0, availablePositions.Count);
+            GameObject ob = grid.SpawnContent(
+                availablePositions[index],
+                unit.gameObject,
+                enemyTeam.transform);
+
+            // Adding enemy to EnemyTeam.Units
+            Unit enemy = ob.GetComponent<Unit>();
+            if(enemy != null) { enemyTeam.units.Add(enemy); }
+
+            availablePositions.RemoveAt(index);
         }
     }
 

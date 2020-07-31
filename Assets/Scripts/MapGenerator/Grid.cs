@@ -51,6 +51,11 @@ public class Grid : MonoBehaviour
         zone.ForEach(grid, ( tile => { tile.ShowPlane(value); }));
     }
 
+    public Tile GetTile(int xpos, int zpos)
+    {
+        return grid[xpos, zpos];
+    }
+
     public List<Tile> AsList(Zone zone)
     {
         List<Tile> list = new List<Tile>();

@@ -1,5 +1,6 @@
 ﻿using System.Collections;
 using System.Collections.Generic;
+using System.Linq;
 using UnityEngine;
 using UnityEngine.UI;
 
@@ -8,23 +9,35 @@ public class TurnManager : MonoBehaviour
     public Grid grid;
     public Zone playerSpawn;
     public UnitTeam playerTeam;
+    public UnitTeam enemyTeam;
 
-    public Text log;
+    private Queue<Unit> order;
+
+    public UIStats uiStats;
+    public UIActions uiActions;
+
+    public Text phaseLog;
+    public Text orderLog;
 
     void Start()
     {
+        Unit.SetTurnManager(this);
         StartCoroutine(PositionTeam());
     }
 
     private IEnumerator PositionTeam()
     {
-        log.text = "Position Team";
+        phaseLog.text = "Position Team";
         grid.ShowTiles(true, playerSpawn);
 
         // Temporary list to set in unit team after positioning completed
         List<Unit> selections = new List<Unit>();
         // Units Remaining toPosition
         Queue<Unit> toPosition = new Queue<Unit>(playerTeam.prefabs);
+
+        Vector3 firstTilePosition = grid.GetTile(
+            playerSpawn.xStart,
+            playerSpawn.zStart).transform.position;
 
         // For each remaining units to position
         while (toPosition.Count > 0)
@@ -33,7 +46,7 @@ public class TurnManager : MonoBehaviour
             Unit prefab = toPosition.Dequeue();
             Unit current = Instantiate(
                 prefab,
-                playerTeam.transform.position,
+                firstTilePosition,
                 Quaternion.identity,
                 playerTeam.transform);
 
@@ -63,12 +76,49 @@ public class TurnManager : MonoBehaviour
         playerTeam.units = selections;
 
         grid.ShowTiles(false, playerSpawn);
-        StartCoroutine(StartPhase());
+        StartCoroutine(StartBattle());
     }
 
-    private IEnumerator StartPhase()
+    private IEnumerator StartBattle()
     {
-        log.text = "Start Phase";
+        phaseLog.text = "Start Battle";
+
+        // setting turn manager on each unit
+        List<Unit> allUnits = new List<Unit>();
+        allUnits.AddRange(playerTeam.units);
+        allUnits.AddRange(enemyTeam.units);
+
+        // setting order queue
+        order = new Queue<Unit>(
+            allUnits.OrderBy( u=> u.stats.speed ));
+
+        UpdateOrderLog();
+
+        yield return new WaitForSeconds(1f);
+        StartCoroutine(StartPhase(order.Dequeue()));
+    }
+
+    // until now there is no need to be a coroutine
+    private IEnumerator StartPhase(Unit unit)
+    {
+        phaseLog.text = "Start Phase";
+        uiStats.SetStats(unit.stats);
+        UpdateOrderLog();
+
+        StartCoroutine(unit.OnStartPhase());
+
         yield return null;
+    }
+
+    private IEnumerator EndPhase() { yield return new WaitForSeconds(1f); }
+    public void EndTurn() { StartCoroutine(EndPhase()); }
+
+    private void UpdateOrderLog()
+    {
+        string text = "";
+        order.ToList().ForEach( unit => {
+            text += unit.stats.nick+" - ";
+        });
+        orderLog.text = text;
     }
 }

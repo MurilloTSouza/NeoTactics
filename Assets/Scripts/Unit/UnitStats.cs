@@ -2,16 +2,16 @@
 using System.Collections.Generic;
 using UnityEngine;
 
-public class UnitStats
+public class UnitStats : MonoBehaviour
 {
     public string nick;
     public int level;
     public int exp;
 
     public int maxhp;
-    public int hp;
+    [ReadOnly] public int hp;
     public int maxap;
-    public int ap;
+    [ReadOnly] public int ap;
 
     public int atk;
     public int def;
@@ -19,6 +19,12 @@ public class UnitStats
     public int speed;
     public int move;
     public int jump;
+
+    private void Awake()
+    {
+        hp = maxhp;
+        ap = maxap;
+    }
 }
 
 public class UnitStatsBuilder {
@@ -40,16 +46,5 @@ public class UnitStatsBuilder {
     public UnitStatsBuilder WithMove(int move) { stats.move = move; return this; }
     public UnitStatsBuilder WithJump(int jump) { stats.jump = jump; return this; }
     public UnitStats Build() { return stats; }
-
-
-
-
-
-
-
-
-
-
-
 }
 
