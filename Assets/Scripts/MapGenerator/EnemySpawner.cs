@@ -16,17 +16,16 @@ public class EnemySpawner : GridListener
     private void SpawnEnemies()
     {
         List<Tile> availablePositions = grid.AsList(spawnZone);
-        foreach(Unit unit in enemyTeam.prefabs)
+        foreach(Unit prefab in enemyTeam.prefabs)
         {
             // Instantiating enemy
             int index = Random.Range(0, availablePositions.Count);
-            GameObject ob = grid.SpawnContent(
+            Unit enemy = grid.SpawnUnit(
                 availablePositions[index],
-                unit.gameObject,
+                prefab,
                 enemyTeam.transform);
 
             // Adding enemy to EnemyTeam.Units
-            Unit enemy = ob.GetComponent<Unit>();
             if(enemy != null) { enemyTeam.units.Add(enemy); }
 
             availablePositions.RemoveAt(index);

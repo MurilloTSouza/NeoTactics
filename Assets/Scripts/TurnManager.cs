@@ -73,7 +73,12 @@ public class TurnManager : MonoBehaviour
         }
 
         // after all units positioned, set to PlayerTeam.Units
+        // and use setunit to set unit xpos and zpos and target content
         playerTeam.units = selections;
+        selections.ForEach(unit => {
+            grid.SetUnit(
+                (int) unit.transform.position.x,
+                (int) unit.transform.position.z, unit); });
 
         grid.ShowTiles(false, playerSpawn);
         StartCoroutine(StartBattle());
@@ -111,6 +116,7 @@ public class TurnManager : MonoBehaviour
     }
 
     private IEnumerator EndPhase() { yield return new WaitForSeconds(1f); }
+
     public void EndTurn() { StartCoroutine(EndPhase()); }
 
     private void UpdateOrderLog()
@@ -121,4 +127,5 @@ public class TurnManager : MonoBehaviour
         });
         orderLog.text = text;
     }
+
 }

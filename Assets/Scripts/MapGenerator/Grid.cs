@@ -14,36 +14,76 @@ public class Grid : MonoBehaviour
     private List<GridListener> listeners;
 
     private void Awake() {
+        // Setting listeners
         listeners = new List<GridListener>(inspectorListeners);
 
+        // Spawning and calling listeners
         grid = mapSpawner.GenerateAndSpawn(xsize, zsize, this.transform);
         listeners.ForEach(l => l.OnGridSpawn());
     }
 
     //Instantiate content at the grid[x,z] position and return it
-    public GameObject SpawnContent(int xpos, int zpos, GameObject prefab, Transform parent)
+    public GameObject SpawnContent(Tile tile, GameObject prefab, Transform parent)
     {
-        Tile tile = grid[xpos, zpos];
         GameObject content = Instantiate(
-            prefab, 
-            tile.transform.position, 
+            prefab,
+            tile.transform.position,
             Quaternion.identity,
             parent);
 
         tile.content = content;
         return content;
     }
-    public GameObject SpawnContent(Tile tile, GameObject prefab, Transform parent)
+    public GameObject SpawnContent(int xpos, int zpos, GameObject prefab, Transform parent)
     {
-        return SpawnContent(tile.xpos, tile.zpos, prefab, parent);
+        return SpawnContent(grid[xpos, zpos], prefab, parent);
+    }
+
+    // Same as SpawnContent, but set unit xpos and zpos at the end
+    public Unit SpawnUnit(Tile tile, Unit prefab, Transform parent)
+    {
+        GameObject instance = SpawnContent(tile, prefab.gameObject, parent);
+        Unit unit = instance.GetComponent<Unit>();
+        unit.xpos = tile.xpos;
+        unit.zpos = tile.zpos;
+        return unit;
+    }
+    public Unit SpawnUnit(int xpos, int zpos, Unit prefab, Transform parent)
+    {
+        return SpawnUnit(grid[xpos, zpos], prefab, parent);
     }
 
     public void SetContent(Tile target, GameObject content) { target.content = content; }
 
-    public void MoveContentTo(Tile start, Tile end)
+    public void SetUnit(Tile target, Unit unit)
     {
-        end.content = start.content;
+        target.content = unit.gameObject;
+        unit.transform.position = target.transform.position;
+        unit.xpos = target.xpos;
+        unit.zpos = target.zpos;
+    }
+    public void SetUnit(int xpos, int zpos, Unit unit) { SetUnit(grid[xpos, zpos], unit); }
+
+    public void MoveContentTo(GameObject content, Tile start, Tile end)
+    {
         start.content = null;
+        end.content = content;
+        content.transform.position = end.transform.position;
+        end.name = "END";
+        Debug.Log(end.content);
+    }
+
+    public void MoveUnitTo(Unit unit, Tile tile) {
+        // transfering content from start to end
+        Tile start = grid[unit.xpos, unit.zpos];
+        MoveContentTo(unit.gameObject, start, tile);
+        // changing current unit xpos and zpos
+        unit.xpos = tile.xpos;
+        unit.zpos = tile.zpos;
+    }
+    public void MoveUnitTo(Unit unit, int xpos, int zpos)
+    {
+        MoveUnitTo(unit, grid[xpos, zpos]);
     }
 
     public void ShowTiles(bool value, Zone zone)
@@ -70,7 +110,26 @@ public class Grid : MonoBehaviour
         return list;
     }
 
+    public List<Tile> OnlyWalkables()
+    {
+        List<Tile> availables = new List<Tile>();
+        for (int x=0; x<=xsize; x++)
+        {
+            for (int z=0; z <= zsize; z++)
+            {
+                Tile t = grid[x, z];
+                if (t != null || t.IsWalkable()) { availables.Add(t); }
+            }
+        }
+        return availables;
+    }
+
     public void Subscribe(GridListener listener) { listeners.Add(listener); }
+
+    public List<Path> FindPath(int xpos, int zpos, int distance)
+    {
+        return PathFinder.Find(grid[xpos, zpos], distance, grid);
+    }
 }
 
 public abstract class GridListener : MonoBehaviour

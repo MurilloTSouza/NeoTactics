@@ -4,11 +4,20 @@ using UnityEngine;
 
 public abstract class Unit : MonoBehaviour
 {
-    protected static TurnManager manager;
+    [ReadOnly] public int xpos;
+    [ReadOnly] public int zpos;
+
     public UnitStats stats;
+
+    protected static TurnManager manager;
 
     public static void SetTurnManager(TurnManager tm) { manager = tm; }
 
     public abstract IEnumerator OnStartPhase();
+
+    protected void ShowPath()
+    {
+        
+    }
 
 }

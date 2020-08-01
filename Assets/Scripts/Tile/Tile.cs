@@ -37,4 +37,6 @@ public class Tile : MonoBehaviour
         plane.tile = this;
         plane.Show(false);
     }
+
+    public bool IsWalkable() { return content == null; }
 }
