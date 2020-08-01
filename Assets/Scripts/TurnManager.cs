@@ -54,7 +54,7 @@ public class TurnManager : MonoBehaviour
             while (!Input.GetMouseButtonUp(0))
             {
                 // Getting mouse position and cliping unit to tile
-                Ray ray = ray = Camera.main.ScreenPointToRay(Input.mousePosition);
+                Ray ray = Camera.main.ScreenPointToRay(Input.mousePosition);
                 RaycastHit hit;
                 if (Physics.Raycast(ray, out hit)) //Probably need to change to RayCastAll
                 {

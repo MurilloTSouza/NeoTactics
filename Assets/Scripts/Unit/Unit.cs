@@ -15,9 +15,20 @@ public abstract class Unit : MonoBehaviour
 
     public abstract IEnumerator OnStartPhase();
 
-    protected void ShowPath()
+    protected List<Path> ShowPath()
     {
-        
+        List<Path> paths = PathFinder.Find(
+            manager.grid.GetTile(xpos, zpos),
+            stats.move,
+            manager.grid.grid);
+
+        paths.ForEach(path => { path.tile.ShowPlane(true); });
+        return paths;
+    }
+
+    protected void HidePath(List<Path> paths)
+    {
+        paths.ForEach(path => { path.tile.ShowPlane(false); });
     }
 
 }
