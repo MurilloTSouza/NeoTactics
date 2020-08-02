@@ -2,7 +2,7 @@
 using System.Collections.Generic;
 using UnityEngine;
 
-public class PlayerUnit : Unit
+public class PlayerUnit : UnitBattle
 {
     public override IEnumerator OnStartPhase() {
         manager.uiActions.ShowAll(true);
@@ -41,5 +41,34 @@ public class PlayerUnit : Unit
         yield return null;
     }
 
+    public IEnumerator AttackingPhase(AttackRegion attack)
+    {
+        Debug.Log(stats.nick + " attacking turn");
+        manager.uiActions.SetAttackEnabled(false);
+        List<Plane> attackRegion = ShowAttackRegion(attack);
+
+        // wait for player select plane
+        UnitBattle target = null;
+        while (target == null)
+        {
+            while (!Input.GetMouseButtonUp(0))
+            {
+                // if clicked in a unit
+                UnitBattle unit = MouseRaycast.GetPointerCollider<UnitBattle>();
+                if(unit != null) { target = unit; }
+                yield return null;
+            }
+            yield return null;
+        }
+
+        StartCoroutine(Attack(target, attack));
+        HideRegion(attackRegion);
+
+        yield return null;
+    }
+
     public void OnMoveClicked() { StartCoroutine(MovingPhase()); }
+    public void OnAttackClicked() { 
+        StartCoroutine(AttackingPhase(meleeAttack));
+    }
 }

@@ -15,4 +15,3 @@ public class Path
         this.previous = previous;
     }
 }
-

@@ -10,13 +10,14 @@ public class UIActions : MonoBehaviour
     public Button abilityButton;
     public Button endTurnButton;
 
-    private Unit current;
+    private UnitBattle current;
 
     private void Awake() { ShowAll(false); }
 
     public void SetUnit(PlayerUnit unit)
     {
         moveButton.onClick.AddListener(unit.OnMoveClicked);
+        attackButton.onClick.AddListener(unit.OnAttackClicked);
     }
 
     public void ShowAll(bool value)

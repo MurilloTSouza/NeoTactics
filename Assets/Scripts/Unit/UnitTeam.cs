@@ -4,6 +4,6 @@ using UnityEngine;
 
 public class UnitTeam : MonoBehaviour
 {
-    public List<Unit> prefabs;
-    public List<Unit> units;
+    public List<UnitBattle> prefabs;
+    public List<UnitBattle> units;
 }

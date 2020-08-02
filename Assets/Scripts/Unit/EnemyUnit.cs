@@ -2,7 +2,7 @@
 using System.Collections.Generic;
 using UnityEngine;
 
-public class EnemyUnit : Unit
+public class EnemyUnit : UnitBattle
 {
     public override IEnumerator OnStartPhase()
     {

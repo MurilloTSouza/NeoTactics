@@ -11,6 +11,7 @@ GameObject:
   - component: {fileID: 5317558003346970044}
   - component: {fileID: 4701265166016014252}
   - component: {fileID: 2640120813536447146}
+  - component: {fileID: -1542418188298814655}
   m_Layer: 0
   m_Name: EnemyUnit
   m_TagString: Untagged
@@ -44,6 +45,8 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 7d31a287a932a4e41812d523705db7f4, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  xpos: 0
+  zpos: 0
   stats: {fileID: 2640120813536447146}
 --- !u!114 &2640120813536447146
 MonoBehaviour:
@@ -69,3 +72,16 @@ MonoBehaviour:
   speed: 0
   move: 0
   jump: 0
+--- !u!65 &-1542418188298814655
+BoxCollider:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 2221833246004878454}
+  m_Material: {fileID: 0}
+  m_IsTrigger: 0
+  m_Enabled: 1
+  serializedVersion: 2
+  m_Size: {x: 0.8, y: 0.01, z: 0.8}
+  m_Center: {x: 0, y: 0.02, z: 0}

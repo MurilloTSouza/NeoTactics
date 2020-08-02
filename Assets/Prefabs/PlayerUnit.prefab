@@ -11,6 +11,7 @@ GameObject:
   - component: {fileID: 6688089115253852454}
   - component: {fileID: 3425447314979007200}
   - component: {fileID: 6688089115253852448}
+  - component: {fileID: 1446029372504336684}
   m_Layer: 0
   m_Name: PlayerUnit
   m_TagString: Untagged
@@ -44,6 +45,8 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 9056c1fed752c8c48a58c3346cdcd1af, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  xpos: 0
+  zpos: 0
   stats: {fileID: 6688089115253852448}
 --- !u!114 &6688089115253852448
 MonoBehaviour:
@@ -69,3 +72,16 @@ MonoBehaviour:
   speed: 0
   move: 0
   jump: 0
+--- !u!65 &1446029372504336684
+BoxCollider:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 6688089115253852451}
+  m_Material: {fileID: 0}
+  m_IsTrigger: 0
+  m_Enabled: 1
+  serializedVersion: 2
+  m_Size: {x: 0.8, y: 0.01, z: 0.8}
+  m_Center: {x: 0, y: 0.02, z: 0}

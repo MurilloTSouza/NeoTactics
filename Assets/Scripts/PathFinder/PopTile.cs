@@ -71,7 +71,7 @@ public class PopTile
         }
         catch (Exception e)
         {
-            Debug.Log(e);
+            //Debug.Log(e);
             return null;
         }
     }

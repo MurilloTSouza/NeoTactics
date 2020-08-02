@@ -40,29 +40,29 @@ public class Grid : MonoBehaviour
     }
 
     // Same as SpawnContent, but set unit xpos and zpos at the end
-    public Unit SpawnUnit(Tile tile, Unit prefab, Transform parent)
+    public UnitBattle SpawnUnit(Tile tile, UnitBattle prefab, Transform parent)
     {
         GameObject instance = SpawnContent(tile, prefab.gameObject, parent);
-        Unit unit = instance.GetComponent<Unit>();
+        UnitBattle unit = instance.GetComponent<UnitBattle>();
         unit.xpos = tile.xpos;
         unit.zpos = tile.zpos;
         return unit;
     }
-    public Unit SpawnUnit(int xpos, int zpos, Unit prefab, Transform parent)
+    public UnitBattle SpawnUnit(int xpos, int zpos, UnitBattle prefab, Transform parent)
     {
         return SpawnUnit(grid[xpos, zpos], prefab, parent);
     }
 
     public void SetContent(Tile target, GameObject content) { target.content = content; }
 
-    public void SetUnit(Tile target, Unit unit)
+    public void SetUnit(Tile target, UnitBattle unit)
     {
         target.content = unit.gameObject;
         unit.transform.position = target.transform.position;
         unit.xpos = target.xpos;
         unit.zpos = target.zpos;
     }
-    public void SetUnit(int xpos, int zpos, Unit unit) { SetUnit(grid[xpos, zpos], unit); }
+    public void SetUnit(int xpos, int zpos, UnitBattle unit) { SetUnit(grid[xpos, zpos], unit); }
 
     public void MoveContentTo(GameObject content, Tile start, Tile end)
     {
@@ -73,7 +73,7 @@ public class Grid : MonoBehaviour
         Debug.Log(end.content);
     }
 
-    public void MoveUnitTo(Unit unit, Tile tile) {
+    public void MoveUnitTo(UnitBattle unit, Tile tile) {
         // transfering content from start to end
         Tile start = grid[unit.xpos, unit.zpos];
         MoveContentTo(unit.gameObject, start, tile);
@@ -81,7 +81,7 @@ public class Grid : MonoBehaviour
         unit.xpos = tile.xpos;
         unit.zpos = tile.zpos;
     }
-    public void MoveUnitTo(Unit unit, int xpos, int zpos)
+    public void MoveUnitTo(UnitBattle unit, int xpos, int zpos)
     {
         MoveUnitTo(unit, grid[xpos, zpos]);
     }
