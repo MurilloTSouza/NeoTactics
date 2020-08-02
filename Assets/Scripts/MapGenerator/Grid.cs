@@ -126,9 +126,9 @@ public class Grid : MonoBehaviour
 
     public void Subscribe(GridListener listener) { listeners.Add(listener); }
 
-    public List<Path> FindPath(int xpos, int zpos, int distance)
+    public List<Path> FindPath(int xpos, int zpos, int distance, int jump)
     {
-        return PathFinder.Find(grid[xpos, zpos], distance, grid);
+        return PathFinder.Find(grid[xpos, zpos], distance, jump, grid);
     }
 }
 

@@ -4,7 +4,7 @@ using UnityEngine;
 
 public class PathFinder : MonoBehaviour
 {
-    public static List<Path> Find(Tile start, int distance, Tile[,] grid)
+    public static List<Path> Find(Tile start, int distance, int jump, Tile[,] grid)
     {
         List<Path> paths = new List<Path>();
 
@@ -12,18 +12,12 @@ public class PathFinder : MonoBehaviour
         int zsize = grid.GetLength(1);
         Tile[,] available = FilterWalkables(grid);
 
-        //Removing start from availables
-        //available[start.xpos, start.zpos] = null;
-
         //Initializing queue with adjacents tiles
-        List<Tile> adjacents = PopTile.PopAdjacents(available, start);
+        List<Tile> adjacents = PopTile.PopAdjacents(available, start, jump);
         List<Path> firstPaths = new List<Path>();
         foreach (Tile t in adjacents)
         {
             firstPaths.Add(new Path(1, t, null));
-            //t.Path.SetPrevious(null);
-            //t.Path.SetDistance(1);
-            //firstPaths.Add(t.Path);
         }
         Queue<Path> queue = new Queue<Path>(firstPaths);
 
@@ -38,7 +32,7 @@ public class PathFinder : MonoBehaviour
             if (path.distance < distance){
                 
                 // getting adjacents paths to be added to the queue
-                List<Tile> newAdjacents = PopTile.PopAdjacents(available, path.tile);
+                List<Tile> newAdjacents = PopTile.PopAdjacents(available, path.tile, jump);
                 foreach (Tile t in newAdjacents)
                 {
                     Path adj = new Path(path.distance + 1, t, path);

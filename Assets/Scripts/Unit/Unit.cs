@@ -19,7 +19,7 @@ public abstract class Unit : MonoBehaviour
     {
         List<Path> paths = PathFinder.Find(
             manager.grid.GetTile(xpos, zpos),
-            stats.move,
+            stats.move, stats.jump,
             manager.grid.grid);
 
         paths.ForEach(path => { path.tile.ShowPlane(true); });
