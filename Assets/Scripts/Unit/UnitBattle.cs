@@ -52,8 +52,17 @@ public abstract class UnitBattle : MonoBehaviour
         // if is dead
         if (stats.hp <= 0) {
             stats.hp = 0; // round to 0
+
             //TODO: animate death
+
+            SendEndTurn(this);
         }
         yield return null;
+    }
+
+    public void SendEndTurn(UnitBattle toEnqueue)
+    {
+        if (toEnqueue.stats.hp > 0) { manager.EndTurn(toEnqueue); } // is alive
+        else { manager.EndTurn(null); } // is dead
     }
 }

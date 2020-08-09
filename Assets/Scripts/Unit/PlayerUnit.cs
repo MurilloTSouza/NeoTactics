@@ -5,7 +5,9 @@ using UnityEngine;
 public class PlayerUnit : UnitBattle
 {
     public override IEnumerator OnStartPhase() {
+        manager.uiActions.SetUnit(this);
         manager.uiActions.ShowAll(true);
+        manager.uiActions.EnableAll(true);
         manager.uiActions.SetUnit(this);
         yield return null;
     }
@@ -70,5 +72,10 @@ public class PlayerUnit : UnitBattle
     public void OnMoveClicked() { StartCoroutine(MovingPhase()); }
     public void OnAttackClicked() { 
         StartCoroutine(AttackingPhase(meleeAttack));
+    }
+    public void OnEndTurnClicked() {
+        manager.uiActions.ClearListeners();
+        manager.uiActions.ShowAll(false);
+        SendEndTurn(this);
     }
 }

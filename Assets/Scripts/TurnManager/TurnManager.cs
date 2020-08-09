@@ -99,20 +99,28 @@ public class TurnManager : MonoBehaviour
     }
 
     // until now there is no need to be a coroutine
-    private IEnumerator StartPhase(UnitBattle unit)
+    private IEnumerator StartPhase(UnitBattle next)
     {
         phaseLog.text = "Start Phase";
-        uiStats.SetStats(unit.stats);
+        uiStats.SetStats(next.stats);
         UpdateOrderLog();
 
-        StartCoroutine(unit.OnStartPhase());
+        StartCoroutine(next.OnStartPhase());
 
         yield return null;
     }
 
-    private IEnumerator EndPhase() { yield return new WaitForSeconds(1f); }
+    private IEnumerator EndPhase(UnitBattle toEnqueue) {
+        phaseLog.text = "End Phase...";
+        yield return new WaitForSeconds(1f);
+        StopAllCoroutines(); // just for precaution
 
-    public void EndTurn() { StartCoroutine(EndPhase()); }
+        // enqueue next unit, if is not dead(null)
+        if(toEnqueue != null){ order.Enqueue(toEnqueue); }
+        StartCoroutine(StartPhase(order.Dequeue()));
+    }
+
+    public void EndTurn(UnitBattle toEnqueue) { StartCoroutine(EndPhase(toEnqueue)); }
 
     private void UpdateOrderLog()
     {

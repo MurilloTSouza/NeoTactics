@@ -1,6 +1,7 @@
 ﻿using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using UnityEngine.Events;
 using UnityEngine.UI;
 
 public class UIActions : MonoBehaviour
@@ -16,8 +17,23 @@ public class UIActions : MonoBehaviour
 
     public void SetUnit(PlayerUnit unit)
     {
+        ClearListeners();
         moveButton.onClick.AddListener(unit.OnMoveClicked);
         attackButton.onClick.AddListener(unit.OnAttackClicked);
+        endTurnButton.onClick.AddListener(unit.OnEndTurnClicked);
+    }
+
+    public void ClearListeners()
+    {
+        moveButton.onClick.RemoveAllListeners();
+        attackButton.onClick.RemoveAllListeners();
+        endTurnButton.onClick.RemoveAllListeners();
+    }
+
+    private void SetListener(Button button, UnityAction call)
+    {
+        button.onClick.RemoveAllListeners();
+        button.onClick.AddListener(call);
     }
 
     public void ShowAll(bool value)
