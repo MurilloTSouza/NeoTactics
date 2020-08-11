@@ -11,12 +11,11 @@ public class TurnManager : MonoBehaviour
     public UnitTeam playerTeam;
     public UnitTeam enemyTeam;
 
-    private Queue<UnitBattle> order;
+    private List<UnitBattle> order = new List<UnitBattle>();
 
     public UIStats uiStats;
     public UIActions uiActions;
 
-    public Text phaseLog;
     public Text orderLog;
 
     void Start()
@@ -27,7 +26,7 @@ public class TurnManager : MonoBehaviour
 
     private IEnumerator PositionTeam()
     {
-        phaseLog.text = "Position Team";
+        Debug.Log("TurnManager: PositionTeam");
         grid.ShowTiles(true, playerSpawn);
 
         // Temporary list to set in unit team after positioning completed
@@ -81,29 +80,22 @@ public class TurnManager : MonoBehaviour
 
     private IEnumerator StartBattle()
     {
-        phaseLog.text = "Start Battle";
+        Debug.Log("TurnManager: StartBattle");
 
-        // setting turn manager on each unit
-        List<UnitBattle> allUnits = new List<UnitBattle>();
-        allUnits.AddRange(playerTeam.units);
-        allUnits.AddRange(enemyTeam.units);
-
-        // setting order queue
-        order = new Queue<UnitBattle>(
-            allUnits.OrderBy( u=> u.stats.speed ));
-
+        order.AddRange(playerTeam.units);
+        order.AddRange(enemyTeam.units);
         UpdateOrderLog();
 
         yield return new WaitForSeconds(1f);
-        StartCoroutine(StartPhase(order.Dequeue()));
+        
+        StartCoroutine(StartPhase(NextFromOrder()));
     }
 
     // until now there is no need to be a coroutine
     private IEnumerator StartPhase(UnitBattle next)
     {
-        phaseLog.text = "Start Phase";
+        Debug.Log("TurnManager: StartPhase ("+next+")");
         uiStats.SetStats(next.stats);
-        UpdateOrderLog();
 
         StartCoroutine(next.OnStartPhase());
 
@@ -111,16 +103,41 @@ public class TurnManager : MonoBehaviour
     }
 
     private IEnumerator EndPhase(UnitBattle toEnqueue) {
-        phaseLog.text = "End Phase...";
+        Debug.Log("TurnManager: EndPhase("+toEnqueue+")");
         yield return new WaitForSeconds(1f);
         StopAllCoroutines(); // just for precaution
 
         // enqueue next unit, if is not dead(null)
-        if(toEnqueue != null){ order.Enqueue(toEnqueue); }
-        StartCoroutine(StartPhase(order.Dequeue()));
+        if(toEnqueue != null){ Enqueue(toEnqueue); }
+        StartCoroutine(StartPhase(NextFromOrder()));
     }
 
     public void EndTurn(UnitBattle toEnqueue) { StartCoroutine(EndPhase(toEnqueue)); }
+
+    private void Enqueue(UnitBattle unit)
+    {
+        order.Add(unit);
+        UpdateOrderLog();
+    }
+    private UnitBattle NextFromOrder() { return PopFromOrder(0); }
+    public void UnitDied(UnitBattle dead)
+    {
+        RemoveFromOrder(dead);
+        grid.RemoveUnit(dead);
+    }
+
+    private void RemoveFromOrder(UnitBattle toRemove)
+    {
+        order.Remove(toRemove);
+        UpdateOrderLog();
+    }
+    private UnitBattle PopFromOrder(int index)
+    {
+        UnitBattle unit = order[0];
+        order.RemoveAt(0);
+        UpdateOrderLog();
+        return unit;
+    }
 
     private void UpdateOrderLog()
     {

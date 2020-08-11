@@ -69,8 +69,6 @@ public class Grid : MonoBehaviour
         start.content = null;
         end.content = content;
         content.transform.position = end.transform.position;
-        end.name = "END";
-        Debug.Log(end.content);
     }
 
     public void MoveUnitTo(UnitBattle unit, Tile tile) {
@@ -84,6 +82,11 @@ public class Grid : MonoBehaviour
     public void MoveUnitTo(UnitBattle unit, int xpos, int zpos)
     {
         MoveUnitTo(unit, grid[xpos, zpos]);
+    }
+    public void RemoveUnit(UnitBattle unit)
+    {
+        Tile tile = grid[unit.xpos, unit.zpos];
+        tile.content = null;
     }
 
     public void ShowTiles(bool value, Zone zone)

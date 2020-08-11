@@ -46,23 +46,32 @@ public abstract class UnitBattle : MonoBehaviour
 
     public IEnumerator ReceiveDamage(int damage)
     {
-        Debug.Log(stats.nick + " received " + damage + " damage");
+        Debug.Log(this + " received " + damage + " damage");
         stats.hp -= damage;
 
         // if is dead
         if (stats.hp <= 0) {
             stats.hp = 0; // round to 0
+            Debug.Log("UnitBattle: " + this + " died");
 
-            //TODO: animate death
-
-            SendEndTurn(this);
+            StartCoroutine(Die());
         }
         yield return null;
     }
 
     public void SendEndTurn(UnitBattle toEnqueue)
     {
+        Debug.Log("UnitBattle: EndingTurn("+toEnqueue+")");
         if (toEnqueue.stats.hp > 0) { manager.EndTurn(toEnqueue); } // is alive
         else { manager.EndTurn(null); } // is dead
+    }
+
+    private IEnumerator Die()
+    {
+        manager.UnitDied(this);
+
+        yield return new WaitForSeconds(1f); //Death Animation
+
+        Destroy(this.gameObject);
     }
 }

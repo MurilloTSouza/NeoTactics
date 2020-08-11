@@ -6,12 +6,14 @@ public class EnemyUnit : UnitBattle
 {
     public override IEnumerator OnStartPhase()
     {
+        Debug.Log("EnemyUnit: OnStartPhase(" + this + ")");
         StartCoroutine(MovingPhase());
         yield return null;
     }
 
     private IEnumerator MovingPhase()
     {
+        Debug.Log("EnemyUnit: MovingPhase("+this+")");
         List<Path> paths = ShowPath();
 
         Tile target = ChoosePath(paths);
@@ -24,6 +26,7 @@ public class EnemyUnit : UnitBattle
 
     private IEnumerator AttackPhase()
     {
+        Debug.Log("EnemyUnit: AttackPhase("+this+")");
         List<Plane> attackRegion = ShowAttackRegion(meleeAttack);
         UnitBattle target = null;
 
@@ -32,7 +35,7 @@ public class EnemyUnit : UnitBattle
         {
             if(p.tile.content != null)
             {
-                UnitBattle test = p.tile.content.GetComponent<UnitBattle>();
+                UnitBattle test = p.tile.content.GetComponent<PlayerUnit>();
                 if(test != null) { target = test; break; }
             }
         }
